@@ -5,6 +5,7 @@ class Player:
         self.name = name
         self.health = health
         self.attack = attack
+        self.player_class = player_class
         self.weapon = weapon
         self.current_dungeon_level = 1
 
