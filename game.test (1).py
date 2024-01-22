@@ -81,7 +81,7 @@ class Player:
             current_level_enemies.append({"type": enemy_type, "health": enemy_info["health"], "attack": enemy_info["attack"]})
 
         return current_level_enemies
-    
+
     def weapon_attributes(self, enemy):
         weapon_class_mapping = {
             "Inferno Blade": "Brutality",
@@ -213,7 +213,7 @@ def main():
                 print("2. Heal")
                 print("3. Restart Dungeon program")
                 print("=" * 40)
-               
+
                 action = input("Enter the number of your choice: ")
 
                 if action == "1" or action.lower() == "attack":
@@ -290,4 +290,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
