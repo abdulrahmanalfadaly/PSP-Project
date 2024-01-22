@@ -21,7 +21,7 @@ class Player:
             self.attack += 15
             self.weapon = "Wooden Sword"
         elif choice == "2":
-            self.player_cl
+            self.player_class = "Tactical"
             self.health += 25
             self.attack += 7.5
             self.weapon = "Bow"
