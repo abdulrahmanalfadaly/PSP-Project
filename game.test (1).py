@@ -11,6 +11,7 @@ class Player:
 
     def choose_class(self):
         print("Choose your class:")
+        print("1. Brutality")
         print("2. Tactical")
         print("3. Survival")
 
@@ -32,6 +33,7 @@ class Player:
             print("Invalid choice. Defaulting to Brutality.")
 
     def display_stats(self):
+        print("\nPlayer Stats:")
         print(f"Name: {self.name}")
         print(f"Health: {self.health}")
         print(f"Attack: {self.attack}")
