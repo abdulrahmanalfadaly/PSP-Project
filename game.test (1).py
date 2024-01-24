@@ -72,7 +72,6 @@ class Player:
                 "small slime":{"health":45, "attack":5},
                 "small slime":{"health":45, "attack":5},
                 "Zombie": {"health": 150, "attack": 35},
-
             }
         }
 
@@ -81,80 +80,63 @@ class Player:
             current_level_enemies.append({"type": enemy_type, "health": enemy_info["health"], "attack": enemy_info["attack"]})
 
         return current_level_enemies
-
+    
     def weapon_attributes(self, enemy):
-        weapon_class_mapping = {
-            "Inferno Blade": "Brutality",
-            "Frostbite Dagger": "Tactical",
-            "Venomous Bow": "Survival",
-            "Bloodsucker Sword": "Brutality",
-            "Thunderstrike Axe": "Tactical",
-        # Add more mappings for other weapons
-    }
+        weapon_bonus_mapping = {
+            "Inferno Blade": {"bonus_type": "attack", "bonus_value": 20},
+            "Frostbite Dagger": {"bonus_type": "freeze", "bonus_chance": 0.2, "bonus_value": 5},
+            "Venomous Bow": {"bonus_type": "poison", "bonus_value": 10},
+            "Bloodsucker Sword": {"bonus_type": "life_steal", "bonus_value": 15},
+            "Thunderstrike Axe": {"bonus_type": "critical", "bonus_chance": 0.3, "bonus_value": 20},
+            # Add more mappings for other weapons
+        }
 
-        if self.weapon in weapon_class_mapping:
-            weapon_class = weapon_class_mapping[self.weapon]
+        if self.weapon in weapon_bonus_mapping:
+            bonus_info = weapon_bonus_mapping[self.weapon]
 
-        if self.player_class == weapon_class:
-            # Apply attributes based on the weapon's class
-            if self.weapon == "Inferno Blade":
-                # Fire Damage attribute
-                fire_damage = random.randint(5, 15)
-                enemy['health'] -= fire_damage
-                print(f"The {self.weapon} inflicts {fire_damage} fire damage over time!")
+            if bonus_info["bonus_type"] == "attack":
+                self.attack += bonus_info["bonus_value"]
+                print(f"The {self.weapon} gives you an attack bonus of {bonus_info['bonus_value']}!")
 
-            elif self.weapon == "Frostbite Dagger":
-                # Freezing Effect attribute
+            elif bonus_info["bonus_type"] == "freeze":
                 freeze_chance = random.uniform(0, 1)
-                if freeze_chance < 0.2:  # 20% chance to freeze
-                    enemy['attack'] -= 5
+                if freeze_chance < bonus_info["bonus_chance"]:
+                    enemy['attack'] -= bonus_info["bonus_value"]
                     print(f"The {self.weapon} freezes the {enemy['type']}, reducing its attack!")
 
-            elif self.weapon == "Venomous Bow":
-                # Poisonous Coating attribute
-                poison_damage = random.randint(3, 8)
-                enemy['health'] -= poison_damage
-                print(f"The {self.weapon} poisons the {enemy['type']}, dealing {poison_damage} poison damage!")
+            elif bonus_info["bonus_type"] == "poison":
+                enemy['health'] -= bonus_info["bonus_value"]
+                print(f"The {self.weapon} poisons the {enemy['type']}, dealing {bonus_info['bonus_value']} poison damage!")
 
-            elif self.weapon == "Bloodsucker Sword":
-                # Life Steal attribute
-                life_steal = random.randint(10, 20)
+            elif bonus_info["bonus_type"] == "life_steal":
+                life_steal = bonus_info["bonus_value"]
                 self.health += life_steal
                 print(f"The {self.weapon} steals {life_steal} health from the {enemy['type']}!")
 
-            elif self.weapon == "Thunderstrike Axe":
-                # Critical Strike Chance attribute
+            elif bonus_info["bonus_type"] == "critical":
                 critical_chance = random.uniform(0, 1)
-                if critical_chance < 0.3:  # 30% chance for a critical hit
-                    critical_damage = random.randint(15, 25)
+                if critical_chance < bonus_info["bonus_chance"]:
+                    critical_damage = bonus_info["bonus_value"]
                     enemy['health'] -= critical_damage
                     print(f"The {self.weapon} lands a critical hit, dealing {critical_damage} bonus damage!")
 
-                else:
-                    print(f"The {self.weapon} doesn't have any special attributes for {self.player_class} class.")
-
-            else:
-                print(f"You can't use the {self.weapon} with your current class ({self.player_class}).")
-
-        else:
-            print(f"The {self.weapon} isn't mapped to any class-specific attributes.")
-
-
-
+            
     def restart_game(self):
         self.__init__(self.name)
 
-    def scroll(self, chosen_weapon):
-        if chosen_weapon == "1" :
+    def scroll(self, chosen_scroll):
+        if chosen_scroll == "1":
             self.attack += int(self.attack * 0.15)
             print("You received a brutality scroll! Your attack is increased by 15%.")
-        elif chosen_weapon == "2" :
+        elif chosen_scroll == "2":
             self.health += int(self.health * 0.15)
             self.attack += int(self.attack * 0.075)
             print("You received a tactical scroll! Your health is increased by 15 and attack are increased by 5%")
-        elif chosen_weapon == "3" :
+        elif chosen_scroll == "3":
             self.health += 70
             print("You receive a survival scroll! Your health is increased by 70.")
+        else:
+            print("Invalid choice. Defaulting to a random scroll.")
 
     def choose_weapon_from_options(self, weapon_options):
         print("\nChoose your weapon:")
@@ -166,7 +148,7 @@ class Player:
         if 0 <= chosen_weapon_index < len(weapon_options):
             self.weapon = weapon_options[chosen_weapon_index]
             print(f"You chose the {self.weapon}!")
-            self.weapon_attributes()
+            self.weapon_attributes(enemy=None)
         else:
             print("Invalid choice. Defaulting to a random weapon.")
             self.weapon = random.choice(weapon_options)
@@ -192,28 +174,27 @@ def main():
     player = setup_player()
     player.display_stats()
 
-    # Game loop
     while player.health > 0:
         input("\nPress Enter to explore the next dungeon level.")
-
         enemies = player.encounter_enemy()
         print(f"\nYou encounter the following enemies in Dungeon Level {player.current_dungeon_level}:")
-        print("=" *40)
+        print("=" * 40)
         for enemy in enemies:
             print(f"{enemy['type']} - Health: {enemy['health']} | Attack: {enemy['attack']}")
-            player.weapon_attributes()  
-            player.display_stats()            
+        
+        player.weapon_attributes(enemy)  
+        player.display_stats()            
 
         for enemy in enemies:
             while player.health > 0 and enemy['health'] > 0:
-                print("=" *40)
+                print("=" * 40)
                 print(f"Current enemy attacking: {enemy['type']}")
                 print("Choose your action:")
                 print("1. Attack")
                 print("2. Heal")
                 print("3. Restart Dungeon program")
                 print("=" * 40)
-
+               
                 action = input("Enter the number of your choice: ")
 
                 if action == "1" or action.lower() == "attack":
@@ -258,13 +239,9 @@ def main():
             player.upgrade_attributes()
             print(f"\nNow entering dungeon level {player.current_dungeon_level}")
 
-            weapon_options = {
-                "Brutality": ["undead sword", "ghost sword", "Mace", "Warhammer", "Halberd"],
-                "Tactical": ["Bow", "Crossbow", "Dagger", "Throwing Knives", "Longbow"],
-                "Survival": ["Spear", "Club", "Bolas", "Boomerang", "Whip"]
-            }
+            weapon_options = ["Inferno Blade", "Frostbite Dagger", "Venoumous Bow", "Bloodsucker Sword", "Thunderstrike Axe"]  #weapon choices
 
-            chosen_weapons = random.sample(weapon_options.get(player.player_class, []), k=3)
+            chosen_weapons = random.sample(weapon_options, k=3)
             print("Congratulations! You found a chest containing 3 weapons:")
             for i, weapon in enumerate(chosen_weapons, start=1):
                 print("=" * 40)
@@ -283,8 +260,6 @@ def main():
             chest_choice = input("Enter the number of your choice: ")
             player.scroll(chest_choice)
             player.display_stats()
-
-
 
     print("Game Over! You were defeated.")
 
