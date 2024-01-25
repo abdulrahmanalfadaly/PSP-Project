@@ -49,7 +49,7 @@ class Player:
     
     def player_heal(self, heal_amount,):
         # Predefined values for heal amount and max health
-        heal_amount = 20  # You can set this value based on your game logic
+        heal_amount = 20  
 
         # Adjust healing amount based on dungeon level
         heal_amount += (self.current_dungeon_level - 1) * 10
