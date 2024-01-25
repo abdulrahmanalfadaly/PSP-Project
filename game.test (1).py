@@ -1,6 +1,5 @@
 import random
 
-
 class Player:
     def __init__(self, name, health=100, max_health=100 , attack=15, player_class="", weapon=""):
         self.name = name
