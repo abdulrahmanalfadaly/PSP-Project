@@ -1,9 +1,11 @@
 import random
 
+
 class Player:
-    def __init__(self, name, health=100, attack=15, player_class="", weapon=""):
+    def __init__(self, name, health=100, max_health=100 , attack=15, player_class="", weapon=""):
         self.name = name
         self.health = health
+        self.max_health = max_health
         self.attack = attack
         self.player_class = player_class
         self.weapon = weapon
@@ -23,10 +25,12 @@ class Player:
         elif choice == "2":
             self.player_class = "Tactical"
             self.health += 25
+            self.max_health +=25
             self.attack += 7.5
             self.weapon = "Bow"
         elif choice == "3":
             self.player_class = "Survival"
+            self.max_health +=50
             self.health += 50
             self.weapon = "Wooden Axe"
         else:
@@ -43,22 +47,37 @@ class Player:
 
     def attack_enemy(self):
         return random.randint(int(0.6 * self.attack), self.attack)
+    
+    def player_heal(self, heal_amount,):
+        # Predefined values for heal amount and max health
+        heal_amount = 20  # You can set this value based on your game logic
+
+        # Adjust healing amount based on dungeon level
+        heal_amount += (self.current_dungeon_level - 1) * 10
+    
+        self.health += heal_amount
+
+        # Cap the health to the specified max_health value
+        if self.health > self.max_health:
+            self.health = self.max_health
+        
+        print(f"\nYou heal yourself for {heal_amount}. Your remaining health is {self.health}")
 
     def upgrade_attributes(self):
         self.health = int(self.health * 1.5)
+        self.max_health = int(self.max_health * 1.5)
         self.attack = int(self.attack * 1.25)
 
     def encounter_enemy(self):
         enemy_attributes_per_level = {
-            1: {"Zombie": {"health": 45, "attack": 10},
-                "small slime": {"health": 10, "attack": 5},
-                "big slime": {"health": 25, "attack": 7}},
-            2: {
-                "Zombie": {"health": 45, "attack": 10},
-                "Skeleton": {"health": 45, "attack": 13},
-                "big slime": {"health": 35, "attack": 15}},
-            3: { "Zombie": {"health": 45, "attack": 18},
-                 "Skeleton": {"health": 60, "attack": 20},
+            1: {"Small Slime": {"health": 30, "attack": 5},
+                "Big Slime": {"health": 40, "attack": 10},
+                "Huge slime": {"health": 50, "attack": 15}},
+            2: {"Baby Zombie": {"health": 55, "attack": 10},
+                "Skeleton": {"health": 65, "attack": 13},
+                "Piglin": {"health": 70, "attack": 15}},
+            3: { "ogre": {"health": 45, "attack": 18},
+                 "Zombie": {"health": 60, "attack": 20},
                  "Spectre" : {"health": 110, "attack": 30},
                  "Ogre": {"health": 90, "attack": 25}},
             4: {"Skeleton": {"health": 90, "attack": 20},
@@ -77,48 +96,64 @@ class Player:
 
         current_level_enemies = []
         for enemy_type, enemy_info in enemy_attributes_per_level[self.current_dungeon_level].items():
-            current_level_enemies.append({"type": enemy_type, "health": enemy_info["health"], "attack": enemy_info["attack"]})
+            current_level_enemies.append({
+                "type": enemy_type,
+                "health": enemy_info["health"],
+                "attack": enemy_info["attack"],
+                "special_ability": enemy_info.get("special_ability", None)
+            })
 
         return current_level_enemies
     
     def weapon_attributes(self, enemy):
-        weapon_bonus_mapping = {
-            "Inferno Blade": {"bonus_type": "attack", "bonus_value": 20},
-            "Frostbite Dagger": {"bonus_type": "freeze", "bonus_chance": 0.2, "bonus_value": 5},
-            "Venomous Bow": {"bonus_type": "poison", "bonus_value": 10},
-            "Bloodsucker Sword": {"bonus_type": "life_steal", "bonus_value": 15},
-            "Thunderstrike Axe": {"bonus_type": "critical", "bonus_chance": 0.3, "bonus_value": 20},
-            # Add more mappings for other weapons
-        }
+        if enemy is not None:
+            weapon_bonus_mapping = {
+                "Inferno Blade": {"bonus_type": "attack", "bonus_value": 20},
+                "Frostbite Dagger": {"bonus_type": "freeze", "bonus_chance": 0.2, "bonus_value": 5},
+                "Venomous Bow": {"bonus_type": "poison", "bonus_value": 10},
+                "Bloodsucker Sword": {"bonus_type": "life_steal", "bonus_value": 15},
+                "Thunderstrike Axe": {"bonus_type": "critical", "bonus_chance": 0.3, "bonus_value": 20},
+                # Add more mappings for other weapons
+            }
 
-        if self.weapon in weapon_bonus_mapping:
-            bonus_info = weapon_bonus_mapping[self.weapon]
+            if self.weapon in weapon_bonus_mapping:
+                bonus_info = weapon_bonus_mapping[self.weapon]
 
-            if bonus_info["bonus_type"] == "attack":
-                self.attack += bonus_info["bonus_value"]
-                print(f"The {self.weapon} gives you an attack bonus of {bonus_info['bonus_value']}!")
+                if bonus_info["bonus_type"] == "fire_attack":
+                    if self.player_class == "Brutality":
+                        # Brutality class has the ability to cause burn damage
+                        burn_chance = random.uniform(0, 1)
+                        if burn_chance < 0.2:  # Adjust the burn chance as needed
+                            burn_damage = bonus_info["bonus_value"]
+                            enemy['health'] -= burn_damage
+                            print(f"The {self.weapon} causes a burn, dealing {burn_damage} damage over time!")
+                        else:
+                            self.attack+=10
 
-            elif bonus_info["bonus_type"] == "freeze":
-                freeze_chance = random.uniform(0, 1)
-                if freeze_chance < bonus_info["bonus_chance"]:
-                    enemy['attack'] -= bonus_info["bonus_value"]
-                    print(f"The {self.weapon} freezes the {enemy['type']}, reducing its attack!")
+                    self.attack += bonus_info["bonus_value"]
+                    print(f"The {self.weapon} gives you an attack bonus of {bonus_info['bonus_value']}!")
 
-            elif bonus_info["bonus_type"] == "poison":
-                enemy['health'] -= bonus_info["bonus_value"]
-                print(f"The {self.weapon} poisons the {enemy['type']}, dealing {bonus_info['bonus_value']} poison damage!")
+                elif bonus_info["bonus_type"] == "freeze":
+                    freeze_chance = random.uniform(0, 1)
+                    if freeze_chance < bonus_info["bonus_chance"]:
+                        enemy['attack'] -= bonus_info["bonus_value"]
+                        print(f"The {self.weapon} freezes the {enemy['type']}, reducing its attack!")
 
-            elif bonus_info["bonus_type"] == "life_steal":
-                life_steal = bonus_info["bonus_value"]
-                self.health += life_steal
-                print(f"The {self.weapon} steals {life_steal} health from the {enemy['type']}!")
+                elif bonus_info["bonus_type"] == "poison":
+                    enemy['health'] -= bonus_info["bonus_value"]
+                    print(f"The {self.weapon} poisons the {enemy['type']}, dealing {bonus_info['bonus_value']} poison damage!")
 
-            elif bonus_info["bonus_type"] == "critical":
-                critical_chance = random.uniform(0, 1)
-                if critical_chance < bonus_info["bonus_chance"]:
-                    critical_damage = bonus_info["bonus_value"]
-                    enemy['health'] -= critical_damage
-                    print(f"The {self.weapon} lands a critical hit, dealing {critical_damage} bonus damage!")
+                elif bonus_info["bonus_type"] == "life_steal":
+                    life_steal = bonus_info["bonus_value"]
+                    self.health += life_steal
+                    print(f"The {self.weapon} steals {life_steal} health from the {enemy['type']}!")
+
+                elif bonus_info["bonus_type"] == "critical":
+                    critical_chance = random.uniform(0, 1)
+                    if critical_chance < bonus_info["bonus_chance"]:
+                        critical_damage = bonus_info["bonus_value"]
+                        enemy['health'] -= critical_damage
+                        print(f"The {self.weapon} lands a critical hit, dealing {critical_damage} bonus damage!")
 
             
     def restart_game(self):
@@ -153,6 +188,38 @@ class Player:
             print("Invalid choice. Defaulting to a random weapon.")
             self.weapon = random.choice(weapon_options)
 
+    def apply_slime_coating_effect(self, enemy):
+        coating_chance = random.uniform(0, 1)
+        if coating_chance < 0.3 and enemy['type'].lower().endswith("slime"):  # Adjust the coating chance as needed
+            print("The slime coats you in a sticky substance!")
+            return True  # Coating successful
+        else:
+            return False  # No coating
+        
+    def player_attack(self, enemy):
+        
+        coating_successful = self.apply_slime_coating_effect(enemy)
+
+        player_damage = self.attack_enemy()
+
+        if coating_successful:
+            # Do additional actions if the coating is successful (optional)
+            player_damage*=0.7
+            player_damage = round(player_damage)
+            enemy['health'] -= player_damage
+            print("Your attack is reduced by the slime coating!")
+            print(f"\nYou attack the {enemy['type']} and deal {player_damage} damage!")
+            print(f"{enemy['type']}'s remaining health: {enemy['health']}")
+
+            
+        else:
+            # If no coating effect, apply normal damage
+            enemy['health'] -= player_damage
+            print(f"\nYou attack the {enemy['type']} and deal {player_damage} damage!")
+            print(f"{enemy['type']}'s remaining health: {enemy['health']}")
+
+    
+
 def welcome_message():
     print("Welcome to the Text-Based RPG Game!")
 
@@ -180,7 +247,7 @@ def main():
         print(f"\nYou encounter the following enemies in Dungeon Level {player.current_dungeon_level}:")
         print("=" * 40)
         for enemy in enemies:
-            print(f"{enemy['type']} - Health: {enemy['health']} | Attack: {enemy['attack']}")
+            print(f"{enemy['type']} - Health: {enemy['health']} | Attack: {enemy['attack']}")       
         
         player.weapon_attributes(enemy)  
         player.display_stats()            
@@ -193,21 +260,17 @@ def main():
                 print("1. Attack")
                 print("2. Heal")
                 print("3. Restart Dungeon program")
-                print("=" * 40)
                
                 action = input("Enter the number of your choice: ")
 
                 if action == "1" or action.lower() == "attack":
-                    player_damage = player.attack_enemy()
-                    enemy['health'] -= player_damage
-                    print(f"\nYou attack the {enemy['type']} and deal {player_damage} damage!")
-                    print(f"{enemy['type']}'s remaining health: {enemy['health']}")
-                    print("=" * 40)
+                    player.player_attack(enemy)
+                    
 
                 elif action == "2" or action.lower() == "heal":
-                    player.health += 20
-                    print(f"\nYou heal yourself for 20")
-                    print(f"Your remaining health is {player.health}")
+                    player.player_heal(heal_amount=0)
+                    
+
 
                 elif action == "3" or action.lower() == "restart":
                     print("\nYou restart the dungeon level.")
@@ -246,8 +309,8 @@ def main():
             for i, weapon in enumerate(chosen_weapons, start=1):
                 print("=" * 40)
                 print(f"{i}. {weapon}")
-                print("=" * 40)
-
+                
+            print("=" * 40)
             player.choose_weapon_from_options(chosen_weapons)
             player.display_stats()
 
