@@ -1,0 +1,7 @@
+[
+    {"name": "Goblin", "health": 30, "attack": 10},
+    {"name": "Troll", "health": 50, "attack": 15},
+    {"name": "Orc", "health": 40, "attack": 20},
+    {"name": "Dragon", "health": 100, "attack": 30},
+    {"name": "Skeleton", "health": 20, "attack": 5}
+]

@@ -1,0 +1,18 @@
+{
+    "Dungeon Level 1": {
+        "enemies": 3,
+        "prize": "Magic Sword"
+    },
+    "Dungeon Level 2": {
+        "enemies": 4,
+        "prize": "Healing Wand"
+    },
+    "Dungeon Level 3": {
+        "enemies": 5,
+        "prize": "Enchanted Shield"
+    },
+    "Dungeon Level 4": {
+        "enemies": 6,
+        "prize": "Enchanted Shield"
+    }
+}
