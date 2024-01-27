@@ -86,11 +86,11 @@ def create_character():
     class_choice = input("Enter your choice (1/2/3): ").strip()
     
     if class_choice == '1':
-        return Character(name, "Brutality", 30, 70)
+        return Character(name, "Mercenary", 30, 70)
     elif class_choice == '2':
-        return Character(name, "Tactical", 50, 50)
+        return Character(name, "Ranger", 50, 50)
     elif class_choice == '3':
-        return Character(name, "Survival", 70, 30)
+        return Character(name, "Berserker", 70, 30)
     else:
         print("Invalid choice.")
         return create_character()
