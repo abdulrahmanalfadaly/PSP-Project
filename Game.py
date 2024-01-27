@@ -37,15 +37,15 @@ def create_character():
     clear()
     name = input("\nEnter your character's name: ").strip()
     clear()
-    print("\nChoose your class:\n1. Brutality (Health: 30, Attack: 70)\n2. Tactical (Health: 50, Attack: 50)\n3. Survival (Health: 70, Attack: 30)")
+    print("\nChoose your class:\n1. Mercenary (Health: 30, Attack: 70)\n2. Ranger (Health: 50, Attack: 50)\n3. Berserker (Health: 70, Attack: 30)")
     class_choice = input("Enter your choice (1/2/3): ").strip()
     
     if class_choice == '1':
-        return Character(name, "Brutality", 30, 70)
+        return Character(name, "Mercenary", 30, 70)
     elif class_choice == '2':
-        return Character(name, "Tactical", 50, 50)
+        return Character(name, "Ranger", 50, 50)
     elif class_choice == '3':
-        return Character(name, "Survival", 70, 30)
+        return Character(name, "Berserker", 70, 30)
     else:
         print("Invalid choice.")
         return create_character()
