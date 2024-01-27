@@ -166,7 +166,7 @@ def combat(character, enemy):
             clear()
             continue
 
-        enemy_damage = random.randint(int(0.6 * adjusted_enemy_damage), adjusted_enemy_damage)
+        enemy_damage = random.randint(int(0.7 * adjusted_enemy_damage), adjusted_enemy_damage)
         character.health -= enemy_damage
         print(f"\nThe {enemy.name} dealt {enemy_damage} damage to you!")
 
