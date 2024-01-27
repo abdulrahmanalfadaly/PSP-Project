@@ -14,15 +14,60 @@ class Character:
         self.max_health = health
         self.attack = attack
         self.inventory = ["Sword"]
+        self.obtained_weapons = []
         self.current_dungeon = 1
 
 def equip_weapon(character, weapon_name, attack_modifier, health_modifier):
     character.inventory.append(weapon_name)
+    character.obtained_weapons.append(weapon_name)
     character.attack += attack_modifier
     character.max_health += health_modifier
     character.health = min(character.health + health_modifier, character.max_health)
     print(f"You equipped {weapon_name}! Your attack is now {character.attack} and your health is now {character.health}")
 
+def get_weapon_by_name(character, weapon_name):
+    for weapon in load_json_data('weapons.json'):
+        if weapon['name'] == weapon_name and weapon_name in character.inventory:
+            return weapon
+    return None
+
+def apply_special_abilities(character, enemy):
+    inferno_blade = get_weapon_by_name(character, "Inferno Blade")
+    shieldbreaker = get_weapon_by_name(character, "Shieldbreaker")
+    frost_bite_dagger = get_weapon_by_name(character, "Frost Bite Dagger")
+
+    #Inferno Blade ability
+    if inferno_blade and 'special_ability' in inferno_blade:
+        burn_chance = inferno_blade['special_ability']['chance']
+        if random.randint(1, 100) <= burn_chance:
+            burn_damage = inferno_blade['special_ability']['damage']
+            enemy.health -= burn_damage
+            print(f"The {enemy.name} is burned for {burn_damage} damage!")
+            time.sleep(1)
+
+    #Shieldbreaker ability
+    if shieldbreaker and 'special_ability' in shieldbreaker:
+        defense_break_chance = shieldbreaker['special_ability']['chance']
+        if random.randint(1, 100) <= defense_break_chance:
+            defense_reduction = shieldbreaker['special_ability']['reduction']
+            adjusted_enemy_damage = max(0, enemy.attack - defense_reduction)
+            print(f"The {enemy.name}'s defense is broken! Enemy damage reduced from {enemy.attack} to {adjusted_enemy_damage}.")
+            time.sleep(1)
+        else:
+            adjusted_enemy_damage = enemy.attack
+    else:
+        adjusted_enemy_damage = enemy.attack 
+
+    #Frost Bite Dagger ability
+    if frost_bite_dagger and 'special_ability' in frost_bite_dagger:
+        freeze_chance = frost_bite_dagger['special_ability']['chance']
+        if random.randint(1, 100) <= freeze_chance:
+            print(f"The {enemy.name} is frozen and cannot attack!")
+            time.sleep(1)
+            return adjusted_enemy_damage, True  
+    
+    return adjusted_enemy_damage, False 
+    
 class Enemy:
     def __init__(self, name, health, attack):
         self.name = name
@@ -37,15 +82,15 @@ def create_character():
     clear()
     name = input("\nEnter your character's name: ").strip()
     clear()
-    print("\nChoose your class:\n1. Mercenary (Health: 30, Attack: 70)\n2. Ranger (Health: 50, Attack: 50)\n3. Berserker (Health: 70, Attack: 30)")
+    print("\nChoose your class:\n1. Brutality (Health: 30, Attack: 70)\n2. Tactical (Health: 50, Attack: 50)\n3. Survival (Health: 70, Attack: 30)")
     class_choice = input("Enter your choice (1/2/3): ").strip()
     
     if class_choice == '1':
-        return Character(name, "Mercenary", 30, 70)
+        return Character(name, "Brutality", 30, 70)
     elif class_choice == '2':
-        return Character(name, "Ranger", 50, 50)
+        return Character(name, "Tactical", 50, 50)
     elif class_choice == '3':
-        return Character(name, "Berserker", 70, 30)
+        return Character(name, "Survival", 70, 30)
     else:
         print("Invalid choice.")
         return create_character()
@@ -72,8 +117,14 @@ def dungeon_exploration(character):
             return False
 
     character.current_dungeon += 1
-    weapon = random.choice(load_json_data('weapons.json'))
+    obtained_weapon = None
+    while obtained_weapon is None or obtained_weapon in character.obtained_weapons:
+        weapon = random.choice(load_json_data('weapons.json'))
+        obtained_weapon = weapon['name']
+    
+    
     equip_weapon(character, weapon['name'], weapon['attack_modifier'], weapon['health_modifier'])
+    character.obtained_weapons.append(obtained_weapon)
     clear()
     print(f"\nCongratulations! You passed the dungeon and got {weapon['name']}")
     time.sleep(3)
@@ -89,19 +140,35 @@ def combat(character, enemy):
         action = input("\nDo you want to (A)ttack, (H)eal or (R)un? ").strip().upper()
 
         if action == 'A':
-            enemy.health -= character.attack
+            min_damage = int(0.7 * character.attack)
+            max_damage = character.attack
+            player_damage = random.randint(min_damage, max_damage)
+            enemy.health -= player_damage
+            print(f"\nYou dealt {player_damage} damage to the {enemy.name}!")
+            time.sleep(1)  
+
+            # Check for special abilities 
+            adjusted_enemy_damage, freeze_triggered = apply_special_abilities(character, enemy)
+
+            if freeze_triggered:
+                continue  
+
         elif action == 'H':
             character.health = min(character.health + 10, character.max_health)
             print("\nHealing...")
-            time.sleep(2)
+            time.sleep(1)
             clear()
         elif action == 'R':
             print("\nEscaping the Dungeon...")
-            time.sleep(2)
+            time.sleep(1)
             return True
         else:
             clear()
             continue
+
+        enemy_damage = random.randint(int(0.6 * adjusted_enemy_damage), adjusted_enemy_damage)
+        character.health -= enemy_damage
+        print(f"\nThe {enemy.name} dealt {enemy_damage} damage to you!")
 
         character.health -= enemy.attack
         if character.health <= 0:
@@ -121,7 +188,8 @@ def save_game(character):
         'attack': character.attack,
         'player_class': character.char_class,
         'inventory': character.inventory,
-        'current_dungeon': character.current_dungeon
+        'current_dungeon': character.current_dungeon,
+        'obtained_weapons': character.obtained_weapons
     }
     with open('game_save.json', 'w') as file:
         json.dump(save_data, file)
@@ -165,11 +233,11 @@ def main_game_loop(character):
         elif choice == '2':
             character.health = character.max_health
             print("\nResting...")
-            time.sleep(2)
+            time.sleep(1)
         elif choice == '3':
             save_game(character)
             print("\nGame Saved.")
-            time.sleep(2)
+            time.sleep(1)
         else:
             print("Invalid choice.")
 
