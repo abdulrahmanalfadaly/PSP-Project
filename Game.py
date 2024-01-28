@@ -135,6 +135,10 @@ def equip_weapon(character, weapons):
     print(f"\nYou found {weapon['name']}! Your attack and health is now increased")
     time.sleep(3)
 
+def load_json_data(file_name):
+    with open(file_name, 'r') as file:
+        return json.load(file)
+        
 def dungeon_exploration(character):
     clear()
     dungeons = load_json_data('dungeons.json')
