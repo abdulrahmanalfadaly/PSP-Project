@@ -118,17 +118,28 @@ def dungeon_exploration(character):
             return False
 
     character.current_dungeon += 1
-    obtained_weapon = None
-    while obtained_weapon is None or obtained_weapon in character.obtained_weapons:
-        weapon = random.choice(load_json_data('weapons.json'))
-        obtained_weapon = weapon['name']
-    
-    
-    equip_weapon(character, weapon['name'], weapon['attack_modifier'], weapon['health_modifier'])
-    character.obtained_weapons.append(obtained_weapon)
-    clear()
-    print(f"\nCongratulations! You passed the dungeon and got {weapon['name']}")
-    time.sleep(3)
+    weapon = random.choice(load_json_data('weapons.json'))
+
+    if weapon['name'] not in character.obtained_weapons:  
+        equip_weapon(character, weapon['name'], weapon['attack_modifier'], weapon['health_modifier'])
+        character.obtained_weapons.append(weapon['name'])
+        clear()
+        print(f"\nCongratulations! You passed the dungeon and got {weapon['name']}")
+        time.sleep(3)
+    else:
+        clear()
+        print(f"\nYou already obtained {weapon['name']} in a previous dungeon.")
+        time.sleep(3)
+        # Generate another random weapon
+        new_weapon = random.choice(load_json_data('weapons.json'))
+        while new_weapon['name'] in character.obtained_weapons:
+            new_weapon = random.choice(load_json_data('weapons.json'))
+        
+        equip_weapon(character, new_weapon['name'], new_weapon['attack_modifier'], new_weapon['health_modifier'])
+        character.obtained_weapons.append(new_weapon['name'])
+        print(f"\nCongratulations! You passed the dungeon and got a new weapon: {new_weapon['name']}")
+        time.sleep(3)
+
     return False
 
 def combat(character, enemy):
@@ -200,8 +211,9 @@ def load_game():
         with open('game_save.json', 'r') as file:
             save_data = json.load(file)
         character = Character(save_data['name'], save_data['player_class'], save_data['health'], save_data['attack'])
-        character.inventory = save_data        ['inventory']
+        character.inventory = save_data['inventory']
         character.current_dungeon = save_data['current_dungeon']
+        character.obtained_weapons = save_data.get('obtained_weapons', [])
         return character
     except FileNotFoundError:
         print("No saved game found. Starting a new game.")
