@@ -36,163 +36,101 @@
             "name": "Defense Break",
             "chance": 30,
             "reduction": 5
-        }
     },
     {
         "name": "Thunder Axe",
         "attack_modifier": 12,
         "health_modifier": 2,
-        "special_ability": {
-            "name": "Electrocute",
-            "chance": 20,
-            "damage": 10
-        }
+        "special_ability": null
     },
     {
         "name": "Serpentine Dagger",
         "attack_modifier": 8,
-        "health_modifier": 0,
-        "special_ability": {
-            "name": "Venomous Strike",
-            "chance": 18,
-            "damage": 12
-        }
+        "health_modifier": 2,
+        "special_ability": null
     },
     {
         "name": "Mystic Wand",
         "attack_modifier": 6,
         "health_modifier": 3,
-        "special_ability": {
-            "name": "Arcane Burst",
-            "chance": 22,
-            "damage": 8
-        }
+        "special_ability": null
     },
     {
         "name": "Sword of the Moon",
         "attack_modifier": 9,
         "health_modifier": 1,
-        "special_ability": {
-            "name": "Lunar Slash",
-            "chance": 25,
-            "damage": 15
-        }
+        "special_ability": null
     },
     {
         "name": "Fireball Staff",
         "attack_modifier": 4,
         "health_modifier": 4,
-        "special_ability": {
-            "name": "Explosive Flame",
-            "chance": 15,
-            "damage": 20
-        }
+        "special_ability": null
     },
     {
         "name": "Venom Bow",
         "attack_modifier": 7,
-        "health_modifier": 0,
-        "special_ability": {
-            "name": "Toxic Arrow",
-            "chance": 18
-        }
+        "health_modifier": 1,
+        "special_ability": null
     },
     {
         "name": "Earthquake Hammer",
         "attack_modifier": 15,
         "health_modifier": 2,
-        "special_ability": {
-            "name": "Quake Smash",
-            "chance": 25,
-            "damage": 12
-        }
+        "special_ability": null
     },
     {
         "name": "Aegis Shield",
         "attack_modifier": 0,
         "health_modifier": 15,
-        "special_ability": {
-            "name": "Guardian's Shield",
-            "chance": 25,
-            "defense": 7
-        }
+        "special_ability": null
     },
     {
         "name": "Phoenix Sword",
         "attack_modifier": 11,
         "health_modifier": 1,
-        "special_ability": {
-            "name": "Rising Flames",
-            "chance": 20,
-            "damage": 18
-        }
+        "special_ability": null
     },
     {
         "name": "Gale Dagger",
         "attack_modifier": 6,
-        "health_modifier": 0,
-        "special_ability": {
-            "name": "Whirlwind Strike",
-            "chance": 20
-        }
+        "health_modifier": 3,
+        "special_ability": null
     },
     {
         "name": "Crystal Bow",
         "attack_modifier": 8,
-        "health_modifier": 0,
-        "special_ability": {
-            "name": "Crystal Shot",
-            "chance": 15,
-            "damage": 15
-        }
+        "health_modifier": 2,
+        "special_ability": null
     },
     {
         "name": "Divine Mace",
         "attack_modifier": 13,
         "health_modifier": 3,
-        "special_ability": {
-            "name": "Heavenly Smash",
-            "chance": 25,
-            "healing": 10
-        }
+        "special_ability": null
     },
     {
         "name": "Darkness Scythe",
         "attack_modifier": 14,
         "health_modifier": 0,
-        "special_ability": {
-            "name": "Shadow Reaper",
-            "chance": 22,
-            "damage": 15
-        }
+        "special_ability": null
     },
     {
         "name": "Tidal Trident",
         "attack_modifier": 10,
         "health_modifier": 4,
-        "special_ability": {
-            "name": "Tsunami Strike",
-            "chance": 18,
-            "damage": 12
-        }
+        "special_ability": null
     },
     {
         "name": "Cursed Sword",
         "attack_modifier": 9,
         "health_modifier": -2,
-        "special_ability": {
-            "name": "Curse Infliction",
-            "chance": 15
-        }
+        "special_ability": null
     },
     {
         "name": "Solar Scepter",
         "attack_modifier": 7,
         "health_modifier": 2,
-        "special_ability": {
-            "name": "Solar Flare",
-            "chance": 20,
-            "damage": 18
-        }
+        "special_ability": null
     }
 ]
