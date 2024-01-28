@@ -166,7 +166,7 @@ def combat(character, enemy):
                 continue  
 
         elif action == 'H':
-            adjusted_enemy_damage = apply_special_abilities(character, enemy)
+            adjusted_enemy_damage , _ = apply_special_abilities(character, enemy)
             character.health = min(character.health + 10, character.max_health)
             print("\nHealing...")
             time.sleep(1)
