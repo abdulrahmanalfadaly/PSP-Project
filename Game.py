@@ -170,7 +170,6 @@ def combat(character, enemy):
         character.health -= enemy_damage
         print(f"\nThe {enemy.name} dealt {enemy_damage} damage to you!")
 
-        character.health -= enemy.attack
         if character.health <= 0:
             print("\nYou have been defeated!")
             time.sleep(2)
