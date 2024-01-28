@@ -37,16 +37,17 @@ def apply_special_abilities(character, enemy):
     frost_bite_dagger = get_weapon_by_name(character, "Frost Bite Dagger")
 
     #Inferno Blade ability
-    if inferno_blade and 'special_ability' in inferno_blade:
+    if inferno_blade and 'special_ability' in inferno_blade and inferno_blade['name'] in character.inventory:
         burn_chance = inferno_blade['special_ability']['chance']
         if random.randint(1, 100) <= burn_chance:
             burn_damage = inferno_blade['special_ability']['damage']
             enemy.health -= burn_damage
             print(f"The {enemy.name} is burned for {burn_damage} damage!")
             time.sleep(1)
+            return enemy.attack, True
 
     #Shieldbreaker ability
-    if shieldbreaker and 'special_ability' in shieldbreaker:
+    if shieldbreaker and 'special_ability' in shieldbreaker and shieldbreaker['name'] in character.inventory:
         defense_break_chance = shieldbreaker['special_ability']['chance']
         if random.randint(1, 100) <= defense_break_chance:
             defense_reduction = shieldbreaker['special_ability']['reduction']
@@ -59,7 +60,7 @@ def apply_special_abilities(character, enemy):
         adjusted_enemy_damage = enemy.attack 
 
     #Frost Bite Dagger ability
-    if frost_bite_dagger and 'special_ability' in frost_bite_dagger:
+    if frost_bite_dagger and 'special_ability' in frost_bite_dagger and frost_bite_dagger['name'] in character.inventory:
         freeze_chance = frost_bite_dagger['special_ability']['chance']
         if random.randint(1, 100) <= freeze_chance:
             print(f"The {enemy.name} is frozen and cannot attack!")
@@ -154,6 +155,7 @@ def combat(character, enemy):
                 continue  
 
         elif action == 'H':
+            adjusted_enemy_damage = apply_special_abilities(character, enemy)
             character.health = min(character.health + 10, character.max_health)
             print("\nHealing...")
             time.sleep(1)
