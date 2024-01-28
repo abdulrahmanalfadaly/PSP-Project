@@ -3,10 +3,10 @@
 # Course: PSP0101 PROBLEM SOLVING AND PROGRAM DESIGN
 # Class: TL4L?
 # Year: 2024/25 Trimester 2
-# Names: Abdelrahman | Amir | Kumarish | 
-# IDs: 1221104939 | 1221106717 | 1221109491
-# Emails: 1221104939@student.mmu.edu.my | 1221106717@student.mmu.edu.my | 1221109491@student.mmu.edu.my
-# Phones: 0194853195 | 0194476225 | 0189292447
+# Names: Abdelrahman | Amir | Kumarish | Nizam | 
+# IDs: 1221104939 | 1221106717 | 1221109491 | 1221206115
+# Emails: 1221104939@student.mmu.edu.my | 1221106717@student.mmu.edu.my | 1221109491@student.mmu.edu.my | 1221206115@student.mmu.edu.my
+# Phones: 0194853195 | 0194476225 | 0189292447 | 0104436121
 # *********************************************************
 
 import json
@@ -44,9 +44,9 @@ class Character:
         self.health = health
         self.max_health = health
         self.attack = attack
-        self.inventory = ["Sword"]  # Default weapon, ensure to load weapon details including effects
+        self.inventory = ["Sword"]  
         self.current_dungeon = 1
-        self.weapon_effects = []  # Added to store weapon effects
+        self.weapon_effects = []  
 
     def heal(self, amount):
         self.health = min(self.health + amount, self.max_health)
@@ -62,7 +62,7 @@ class Character:
         time.sleep(1)
 
     def attack_enemy(self, enemy):
-        self.apply_weapon_effects()  # Apply effects before calculating damage
+        self.apply_weapon_effects()  
         min_damage = int(0.7 * self.attack)
         max_damage = self.attack
         player_damage = random.randint(min_damage, max_damage)
@@ -81,12 +81,10 @@ class Character:
             if random.randint(1, 100) <= effect['chance']:
                 if effect['effect'] == 'increase_player_attack':
                     print("Your weapon's inferno blaze increases your attack!")
-                    self.attack += 5  # Example modifier, adjust as needed
+                    self.attack += 5  
                 elif effect['effect'] == 'reduce_enemy_attack':
-                    # This effect would need to be considered in the enemy attack logic
                     print("Your weapon's shieldbreaker effect is ready, but needs implementation.")
                 elif effect['effect'] == 'prevent_enemy_attack':
-                    # This effect would need to be considered in the enemy attack logic
                     print("Your weapon's frost bite effect is ready, but needs implementation.")
 
 
@@ -116,16 +114,15 @@ def create_character():
         return Character(name, "Survival", 70, 30)
 
 def equip_weapon(character, weapons):
-    # This function now also triggers loading of weapon effects
-    # Filter out weapons already in the inventory
+   
     new_weapons = [weapon for weapon in weapons if weapon['name'] not in character.inventory]
     
-    # If all weapons are already in inventory, print a message and return
+    
     if not new_weapons:
         print("You already have all available weapons.")
         return
     
-    # Randomly choose a new weapon from the filtered list
+
     weapon = random.choice(new_weapons)
     character.inventory.append(weapon['name'])
     character.attack += weapon['attack_modifier']
@@ -171,7 +168,7 @@ def dungeon_exploration(character):
         elif result == 'escaped':
             return 'escaped'
         
-         # Player has passed the dungeon, announce it here
+         
     clear()
     print(f"\nCongratulations, {character.name}! You have successfully passed Dungeon Level {character.current_dungeon}!")
     time.sleep(2)
@@ -181,7 +178,7 @@ def dungeon_exploration(character):
     if not weapons:
         return 'error'
     
-    # Pass the entire list of weapons to equip_weapon
+
     equip_weapon(character, weapons)
     clear()
     time.sleep(2)
@@ -201,7 +198,7 @@ def combat(character, enemy):
             character.attack_enemy(enemy)
 
         elif action == 'H':
-            character.heal(10)  # Assume a fixed healing amount or a calculation based on character stats
+            character.heal(10)  
 
         elif action == 'R':
             clear()
@@ -215,8 +212,8 @@ def combat(character, enemy):
 
         if character.health <= 0:
             print("\nYou have been defeated!")
-            character.inventory = ["Sword"]  # Reset inventory to default weapon
-            character.load_weapon_effects()  # Reload weapon effects for the default weapon
+            character.inventory = ["Sword"]  
+            character.load_weapon_effects()  
             time.sleep(2)
             return 'defeated'
         if enemy.health <= 0:
@@ -259,26 +256,139 @@ def main_menu():
     elif choice == 'N':
         return create_character()
 
+def load_json_data(file_name):
+    with open(file_name, 'r') as file:
+        return json.load(file)
+
+def boss_fight(character):
+    boss_data = load_json_data('lastboss.json')
+    print("Boss Data:", boss_data)  
+    if boss_data and isinstance(boss_data, list) and len(boss_data) > 0:
+        boss = boss_data[0]  
+        boss_name = boss.get('name')
+        boss_health = boss.get('health')
+        boss_attack = boss.get('attack')
+
+        while boss_health > 0 and character.health > 0:
+            clear()
+            print(f"\n{character.name}: {character.health} HP | {boss_name}: {boss_health} HP\n")
+            print(f"\nYour Attack: {character.attack}, Enemy Attack: {boss_attack}")
+        
+            action = input("\nDo you want to (A)ttack, (H)eal, or (R)un? ").strip().upper()
+            if action == 'A':
+                min_damage = int(0.7 * character.attack)
+                max_damage = character.attack
+                player_damage = random.randint(min_damage, max_damage)
+                boss_health -= player_damage
+                print(f"\nYou dealt {player_damage} damage to the {boss_name}!")
+                time.sleep(1)  
+
+                character_damage = random.randint(int(0.7 * boss_attack), boss_attack)
+                if character.health - character_damage <= 1:
+                    character.health = 1
+                    print("Nihilus the Titan's attack brings you to the brink of death!")
+                    time.sleep(2)
+                    trigger_cutscene(character)
+                    break
+                else:
+                    character.health -= character_damage
+                    print(f"\nNihilus the Titan attacked you, dealing {character_damage} damage!")
+                    time.sleep(1)
+
+            elif action == 'H':
+                character.health = min(character.health + 10, character.max_health)
+                print("\nHealing...")
+                time.sleep(1)
+                clear()
+
+            elif action == 'R':
+                print("\nYou attempted to flee from it!")
+                print("\nNihilus the Titan: Foolish creature!")
+                print("\nYou cannot flee from the it!")
+                time.sleep(3)
+                clear()
+                        
+    if character.health == 1:
+        trigger_cutscene(character)
+
+def trigger_cutscene(character):
+    clear()
+
+    print("*You still managed to survive but only 1 hp left*")
+    print("*Nihilus the Titan is about to deliver its final strike*")
+    input("Press Enter to continue...")
+    clear()
+    print("*Suddenly, someone in full armor jumps in front of you and blocks the attack*")
+    input("Press Enter to continue...")
+    clear()
+    print("Nihilus the Titan: Impossible! How can a mere creature manage to block my attack!")
+    input("Press Enter to continue...")
+    clear()
+    print("*The armored figure makes a full swing with his greatsword and manages to kill Nihilus the Titan with just one strike*")
+    input("Press Enter to continue...")
+    clear()
+    print(f"{character.name}: [Shocked] Is that...? No, it can't be...")
+    input("Press Enter to continue...")
+    clear()
+    print("Armor Figure: [Turn Around] Pathetic.")
+    input("Press Enter to continue...")
+    clear()
+    print(f"{character.name}: [In disbelief] It's you...")
+    input("Press Enter to continue...")
+    clear()
+    print("Armor Figure: The Demon Lord ask me to end you right now before it's too late.")
+    input("Press Enter to continue...")
+    clear()
+    print(f"{character.name}: [Confused] So he somehow manage to know that I'm still alive then....")
+    input("Press Enter to continue...")
+    clear()
+    print("Armor Figure: [Cynical Face] If I end you right now, it'll not be fun.")
+    input("Press Enter to continue...")
+    clear()
+    print(f"{character.name}: [Resolute] I'll save you from his magic, my friend.")
+    input("Press Enter to continue...")
+    clear()
+    print("Armor Figure: [Little Laughing] We'll meet again in Level 50, then it'll be more entertaining to kill you there.")
+    input("Press Enter to continue...")
+    clear()
+    print("*Armor Figure vanishes within shadows*")
+    input("Press Enter to continue...")
+    clear()
+    print(f"{character.name}: [Sigh] I'll make you know your place again like before, Zod, or maybe should I say, The current Demon King.")
+    input("Press Enter to continue...")
+    clear()
+    input("Press Enter to end the game...")
+    clear()
+
 def main_game_loop(character):
     while True:
         clear()
         print(f"\nName: {character.name}\nClass: {character.char_class}\nHealth: {character.health}\nAttack: {character.attack}\nInventory: {character.inventory}\nCurrent Dungeon: {character.current_dungeon}")
-        choice = input_with_prompt("\nWhat would you like to do?  1) Dungeons  2) Rest  3) Save: ", ['1', '2', '3'])
+        choice = input("\nWhat would you like to do?  1) Dungeons  2) Rest  3) Save: ").strip()
 
         if choice == '1':
-            result = dungeon_exploration(character)
-            if result in ['defeated']:
-                character.current_dungeon = max(1, character.current_dungeon - 1)
-                character.heal(character.max_health)
+            if character.current_dungeon < 10:
+                result = dungeon_exploration(character)
+                if result == 'defeated':
+                    print("\nYou have been defeated! Restarting the current dungeon level...")
+                    character.health = character.max_health  
+                    continue 
+                if character.current_dungeon == 10:
+                    print("\nYou have reached the final dungeon level. Prepare for the ultimate challenge!")
+                    input("Press Enter to continue...")
+                    boss_fight(character)  
         elif choice == '2':
-            character.heal(character.max_health)
+            character.health = character.max_health
+            print("\nResting...")
+            time.sleep(1)
         elif choice == '3':
             save_game(character)
             print("\nGame Saved.")
             time.sleep(2)
 
+
 if __name__ == "__main__":
     while True:
         character = main_menu()
-        character.load_weapon_effects()  # Ensure effects are loaded at game start
+        character.load_weapon_effects()  
         main_game_loop(character)
