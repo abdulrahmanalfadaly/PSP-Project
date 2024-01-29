@@ -1,7 +1,7 @@
 [
     {
         "name": "Inferno Blade",
-        "attack_modifier": 5,
+        "attack_modifier": 3,
         "health_modifier": 0,
         "special_ability": {
             "name": "Burns the enemy",
@@ -11,29 +11,13 @@
     },
     {
         "name": "Staff",
-        "attack_modifier": 3,
+        "attack_modifier": 1,
         "health_modifier": 5,
-        "special_ability": null
-    },
-    {
-        "name": "Shieldbreaker",
-        "attack_modifier": 0,
-        "health_modifier": 5,
-        "special_ability": {
-            "name": "Defense Break",
-            "chance": 40,
-            "reduction": 5
-        }
-    },
-    {
-        "name": "Bow",
-        "attack_modifier": 5,
-        "health_modifier": 0,
         "special_ability": null
     },
     {
         "name": "Frost Bite Dagger",
-        "attack_modifier": 5,
+        "attack_modifier": 3,
         "health_modifier": 0,
         "special_ability": {
             "name": "Freeze the enemy",
@@ -41,45 +25,49 @@
         }
     },
     {
+        "name": "Shieldbreaker",
+        "attack_modifier": 0,
+        "health_modifier": 10,
+        "special_ability": {
+            "name": "Defense Break",
+            "chance": 40,
+            "reduction": 5
+        }
+    },
+    {
         "name": "Thunder Axe",
-        "attack_modifier": 12,
-        "health_modifier": 2,
+        "attack_modifier": 3,
+        "health_modifier": 0,
         "special_ability": null
     },
     {
         "name": "Serpentine Dagger",
-        "attack_modifier": 8,
-        "health_modifier": 2,
+        "attack_modifier": 4,
+        "health_modifier": 0,
         "special_ability": null
     },
     {
         "name": "Mystic Wand",
-        "attack_modifier": 6,
-        "health_modifier": 3,
+        "attack_modifier": 3,
+        "health_modifier": 6,
         "special_ability": null
     },
     {
         "name": "Sword of the Moon",
-        "attack_modifier": 9,
-        "health_modifier": 1,
+        "attack_modifier": 3,
+        "health_modifier": 3,
         "special_ability": null
     },
     {
         "name": "Fireball Staff",
-        "attack_modifier": 4,
+        "attack_modifier": 2,
         "health_modifier": 4,
         "special_ability": null
     },
     {
-        "name": "Venom Bow",
-        "attack_modifier": 7,
-        "health_modifier": 1,
-        "special_ability": null
-    },
-    {
         "name": "Earthquake Hammer",
-        "attack_modifier": 15,
-        "health_modifier": 2,
+        "attack_modifier": 5,
+        "health_modifier": 0,
         "special_ability": null
     },
     {
@@ -90,40 +78,27 @@
     },
     {
         "name": "Phoenix Sword",
-        "attack_modifier": 11,
-        "health_modifier": 1,
+        "attack_modifier": 4,
+        "health_modifier": 0,
         "special_ability": null
     },
     {
         "name": "Gale Dagger",
-        "attack_modifier": 6,
-        "health_modifier": 3,
-        "special_ability": null
-    },
-    {
-        "name": "Crystal Bow",
-        "attack_modifier": 8,
+        "attack_modifier": 3,
         "health_modifier": 2,
         "special_ability": null
     },
     {
         "name": "Divine Mace",
-        "attack_modifier": 13,
+        "attack_modifier": 2,
         "health_modifier": 3,
         "special_ability": null
     },
     {
-        "name": "Darkness Scythe",
-        "attack_modifier": 14,
-        "health_modifier": 0,
-        "special_ability": null
-    },
-    {
         "name": "Tidal Trident",
-        "attack_modifier": 10,
-        "health_modifier": 4,
+        "attack_modifier": 5,
+        "health_modifier": 5,
         "special_ability": null
     }
 ]
    
-
