@@ -55,6 +55,7 @@ class Character:
         time.sleep(1)
         print(f"\nYour health is now {self.health}")
         time.sleep(1)
+        clear()
 
     def take_damage(self, amount):
         self.health -= amount
@@ -296,8 +297,7 @@ def boss_fight(character):
                     time.sleep(1)
 
             elif action == 'H':
-                character.health = min(character.health + 10, character.max_health)
-                print("\nHealing...")
+                print("\nHe is too powerfull...")
                 time.sleep(1)
                 clear()
 
@@ -311,54 +311,25 @@ def boss_fight(character):
     if character.health == 1:
         trigger_cutscene(character)
 
+
+def load_cutscene():
+    try:
+        with open('cutscene.json', 'r') as file:
+            return json.load(file)["cutscene"]
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("Error: Failed to load cutscene data.")
+        return None
+
 def trigger_cutscene(character):
     clear()
 
-    print("*You still managed to survive but only 1 hp left*")
-    print("*Nihilus the Titan is about to deliver its final strike*")
-    input("Press Enter to continue...")
-    clear()
-    print("*Suddenly, someone in full armor jumps in front of you and blocks the attack*")
-    input("Press Enter to continue...")
-    clear()
-    print("Nihilus the Titan: Impossible! How can a mere creature manage to block my attack!")
-    input("Press Enter to continue...")
-    clear()
-    print("*The armored figure makes a full swing with his greatsword and manages to kill Nihilus the Titan with just one strike*")
-    input("Press Enter to continue...")
-    clear()
-    print(f"{character.name}: [Shocked] Is that...? No, it can't be...")
-    input("Press Enter to continue...")
-    clear()
-    print("Armor Figure: [Turn Around] Pathetic.")
-    input("Press Enter to continue...")
-    clear()
-    print(f"{character.name}: [In disbelief] It's you...")
-    input("Press Enter to continue...")
-    clear()
-    print("Armor Figure: The Demon Lord ask me to end you right now before it's too late.")
-    input("Press Enter to continue...")
-    clear()
-    print(f"{character.name}: [Confused] So he somehow manage to know that I'm still alive then....")
-    input("Press Enter to continue...")
-    clear()
-    print("Armor Figure: [Cynical Face] If I end you right now, it'll not be fun.")
-    input("Press Enter to continue...")
-    clear()
-    print(f"{character.name}: [Resolute] I'll save you from his magic, my friend.")
-    input("Press Enter to continue...")
-    clear()
-    print("Armor Figure: [Little Laughing] We'll meet again in Level 50, then it'll be more entertaining to kill you there.")
-    input("Press Enter to continue...")
-    clear()
-    print("*Armor Figure vanishes within shadows*")
-    input("Press Enter to continue...")
-    clear()
-    print(f"{character.name}: [Sigh] I'll make you know your place again like before, Zod, or maybe should I say, The current Demon King.")
-    input("Press Enter to continue...")
-    clear()
-    input("Press Enter to end the game...")
-    clear()
+    cutscene_data = load_cutscene()
+    if cutscene_data:
+        for line in cutscene_data:
+            print(line)
+            input("Press Enter to continue...")
+            clear()
+    exit() 
 
 def main_game_loop(character):
     while True:
