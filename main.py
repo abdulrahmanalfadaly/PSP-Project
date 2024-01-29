@@ -135,7 +135,7 @@ def create_character():
     class_choice = input_with_prompt("Enter your choice (1/2/3): ", ['1', '2', '3'])
     
     if class_choice == '1':
-        return Character(name, "Brutality", 85, 45)
+        return Character(name, "Brutality", 85, 40)
     elif class_choice == '2':
         return Character(name, "Tactical", 100, 35)
     elif class_choice == '3':
