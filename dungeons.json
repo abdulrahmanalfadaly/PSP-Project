@@ -1,38 +1,29 @@
 {
     "Dungeon Level 1": {
-        "enemies": 3,
-        "prize": "Magic Sword"
+        "enemies": 3
     },
     "Dungeon Level 2": {
-        "enemies": 4,
-        "prize": "Healing Wand"
+        "enemies": 4
     },
     "Dungeon Level 3": {
-        "enemies": 5,
-        "prize": "Enchanted Shield"
+        "enemies": 4
     },
     "Dungeon Level 4": {
-        "enemies": 6,
-        "prize": "Enchanted Shield"
+        "enemies": 5
     },
     "Dungeon Level 5": {
-        "enemies": 6,
-        "prize": "Spell Books"
+        "enemies": 5
     },
     "Dungeon Level 6": {
-        "enemies": 7,
-        "prize": "Cynosure Crystal"
+        "enemies": 6
     },
     "Dungeon Level 7": {
-        "enemies": 8,
-        "prize": "Ephemeral Glyphs"
+        "enemies": 7
     },
     "Dungeon Level 8": {
-        "enemies": 9,
-        "prize": "Aegis of Eldritch Echoes"
+        "enemies": 8
     },
     "Dungeon Level 9": {
-        "enemies": 1,
-        "prize": "Scepter of Arcane Dominion"
+        "enemies": 9
     }
 }
