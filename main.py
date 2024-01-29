@@ -44,7 +44,7 @@ class Character:
         self.health = health
         self.max_health = health
         self.attack = attack
-        self.inventory = ["Sword" , "Frost Bite Dagger"]  
+        self.inventory = ["Sword"]  
         self.current_dungeon = 1
         self.weapon_effects = []  
 
@@ -156,7 +156,6 @@ def equip_weapon(character, weapons):
     character.attack += weapon['attack_modifier']
     character.max_health += weapon['health_modifier']
     character.health = min(character.health + weapon['health_modifier'], character.max_health)
-    character.load_weapon_effects()  # Load effects whenever a new weapon is equipped
     print(f"\nYou found {weapon['name']}! Your attack and health is now increased")
     time.sleep(3)
 
@@ -244,7 +243,6 @@ def combat(character, enemy):
         if character.health <= 0:
             print("\nYou have been defeated!")
             character.inventory = ["Sword"]  
-            character.load_weapon_effects()  
             time.sleep(2)
             return 'defeated'
         if enemy.health <= 0:
