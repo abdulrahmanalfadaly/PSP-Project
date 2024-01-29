@@ -1,8 +1,13 @@
 [
     {
         "name": "Inferno Blade",
-        "attack_modifier": 10,
-        "health_modifier": 0
+        "attack_modifier": 5,
+        "health_modifier": 0,
+        "special_ability": {
+            "name": "Burns the enemy",
+            "chance": 25,
+            "damage": 10
+        }
     },
     {
         "name": "Staff",
@@ -11,9 +16,14 @@
         "special_ability": null
     },
     {
-        "name": "Frost Bite Dagger",
-        "attack_modifier": 5,
-        "health_modifier": 0
+        "name": "Shieldbreaker",
+        "attack_modifier": 0,
+        "health_modifier": 5,
+        "special_ability": {
+            "name": "Defense Break",
+            "chance": 40,
+            "reduction": 5
+        }
     },
     {
         "name": "Bow",
