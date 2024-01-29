@@ -44,7 +44,7 @@ class Character:
         self.health = health
         self.max_health = health
         self.attack = attack
-        self.inventory = ["Sword"]  
+        self.inventory = ["Sword" , "Frost Bite Dagger"]  
         self.current_dungeon = 1
         self.weapon_effects = []  
 
@@ -63,7 +63,6 @@ class Character:
         time.sleep(1)
 
     def attack_enemy(self, enemy):
-        self.apply_weapon_effects()  
         min_damage = int(0.7 * self.attack)
         max_damage = self.attack
         player_damage = random.randint(min_damage, max_damage)
@@ -73,23 +72,51 @@ class Character:
         time.sleep(1)
         return player_damage
     
-    def load_weapon_effects(self):
-        for weapon in load_json_data('weapons.json'):
-            if weapon['name'] in self.inventory:
-                self.weapon_effects = weapon.get('effects', [])
-    def apply_weapon_effects(self):
-        for effect in self.weapon_effects:
-            if random.randint(1, 100) <= effect['chance']:
-                if effect['effect'] == 'increase_player_attack':
-                    print("Your weapon's inferno blaze increases your attack!")
-                    self.attack += 5  
-                elif effect['effect'] == 'reduce_enemy_attack':
-                    print("Your weapon's shieldbreaker effect is ready, but needs implementation.")
-                elif effect['effect'] == 'prevent_enemy_attack':
-                    print("Your weapon's frost bite effect is ready, but needs implementation.")
+def get_weapon_by_name(character, weapon_name):
+    for weapon in load_json_data('weapons.json'):
+        if weapon['name'] == weapon_name and weapon_name in character.inventory:
+            return weapon
+    return None
 
+def apply_special_abilities(character, enemy):
+    inferno_blade = get_weapon_by_name(character, "Inferno Blade")
+    shieldbreaker = get_weapon_by_name(character, "Shieldbreaker")
+    frost_bite_dagger = get_weapon_by_name(character, "Frost Bite Dagger")
 
+    # Inferno Blade ability
+    if inferno_blade and 'special_ability' in inferno_blade and inferno_blade['name'] in character.inventory:
+        burn_chance = inferno_blade['special_ability']['chance']
+        if random.randint(1, 100) <= burn_chance:
+            burn_damage = inferno_blade['special_ability']['damage']
+            enemy.health -= burn_damage
+            print(f"The {enemy.name} is burned for {burn_damage} damage!")
+            time.sleep(1)
+            return enemy.attack, True
 
+    # Shieldbreaker ability
+    if shieldbreaker and 'special_ability' in shieldbreaker and shieldbreaker['name'] in character.inventory:
+        defense_break_chance = shieldbreaker['special_ability']['chance']
+        if random.randint(1, 100) <= defense_break_chance:
+            defense_reduction = shieldbreaker['special_ability']['reduction']
+            adjusted_enemy_damage = max(0, enemy.attack - defense_reduction)
+            print(f"The {enemy.name}'s defense is broken! Enemy damage reduced from {enemy.attack} to {adjusted_enemy_damage}.")
+            time.sleep(1)
+        else:
+            adjusted_enemy_damage = enemy.attack
+    else:
+        adjusted_enemy_damage = enemy.attack 
+
+    # Frost Bite Dagger ability
+    if frost_bite_dagger and 'special_ability' in frost_bite_dagger and frost_bite_dagger['name'] in character.inventory:
+        freeze_chance = frost_bite_dagger['special_ability']['chance']
+        if random.randint(1, 100) <= freeze_chance:
+            print(f"The {enemy.name} is frozen and cannot attack!")
+            time.sleep(1)
+            return adjusted_enemy_damage, True  
+    
+    return adjusted_enemy_damage, False 
+
+    
 class Enemy:
     def __init__(self, name, health, attack):
         self.name = name
@@ -104,15 +131,15 @@ def create_character():
     clear()
     name = input("\nEnter your character's name: ").strip()
     clear()
-    print("\nChoose your class:\n1. Brutality (Health: 30, Attack: 70)\n2. Tactical (Health: 50, Attack: 50)\n3. Survival (Health: 70, Attack: 30)")
+    print("\nChoose your class:\n1. Brutality (Health: 85, Attack: 30)\n2. Tactical (Health: 100, Attack: 25)\n3. Survival (Health: 115, Attack: 20)")
     class_choice = input_with_prompt("Enter your choice (1/2/3): ", ['1', '2', '3'])
     
     if class_choice == '1':
-        return Character(name, "Brutality", 30, 70)
+        return Character(name, "Brutality", 85, 30)
     elif class_choice == '2':
-        return Character(name, "Tactical", 50, 50)
+        return Character(name, "Tactical", 100, 25)
     elif class_choice == '3':
-        return Character(name, "Survival", 70, 30)
+        return Character(name, "Survival", 115, 20)
 
 def equip_weapon(character, weapons):
    
@@ -179,7 +206,6 @@ def dungeon_exploration(character):
     if not weapons:
         return 'error'
     
-
     equip_weapon(character, weapons)
     clear()
     time.sleep(2)
@@ -197,9 +223,13 @@ def combat(character, enemy):
 
         if action == 'A':
             character.attack_enemy(enemy)
+            adjusted_enemy_damage, freeze_triggered = apply_special_abilities(character, enemy)
+
+            if freeze_triggered:
+                continue  
 
         elif action == 'H':
-            character.heal(10)  
+            character.heal(20)  
 
         elif action == 'R':
             clear()
@@ -208,7 +238,7 @@ def combat(character, enemy):
             return 'escaped'
 
         if enemy.health > 0:
-            enemy_damage = random.randint(int(0.7 * enemy.attack), enemy.attack)
+            enemy_damage = random.randint(int(0.7 * adjusted_enemy_damage), adjusted_enemy_damage)
             character.take_damage(enemy_damage)
 
         if character.health <= 0:
@@ -361,5 +391,4 @@ def main_game_loop(character):
 if __name__ == "__main__":
     while True:
         character = main_menu()
-        character.load_weapon_effects()  
         main_game_loop(character)
