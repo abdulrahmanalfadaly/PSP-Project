@@ -89,7 +89,7 @@ def apply_special_abilities(character, enemy):
         if random.randint(1, 100) <= burn_chance:
             burn_damage = inferno_blade['special_ability']['damage']
             enemy.health -= burn_damage
-            print(f"The {enemy.name} is burned for {burn_damage} damage!")
+            print(f"\nThe {enemy.name} is burned for {burn_damage} damage!")
             time.sleep(1)
             return enemy.attack, True
 
@@ -99,7 +99,7 @@ def apply_special_abilities(character, enemy):
         if random.randint(1, 100) <= defense_break_chance:
             defense_reduction = shieldbreaker['special_ability']['reduction']
             adjusted_enemy_damage = max(0, enemy.attack - defense_reduction)
-            print(f"The {enemy.name}'s defense is broken! Enemy damage reduced from {enemy.attack} to {adjusted_enemy_damage}.")
+            print(f"\nThe {enemy.name}'s defense is broken! Enemy damage reduced from {enemy.attack} to {adjusted_enemy_damage}.")
             time.sleep(1)
         else:
             adjusted_enemy_damage = enemy.attack
@@ -110,7 +110,7 @@ def apply_special_abilities(character, enemy):
     if frost_bite_dagger and 'special_ability' in frost_bite_dagger and frost_bite_dagger['name'] in character.inventory:
         freeze_chance = frost_bite_dagger['special_ability']['chance']
         if random.randint(1, 100) <= freeze_chance:
-            print(f"The {enemy.name} is frozen and cannot attack!")
+            print(f"\nThe {enemy.name} is frozen and cannot attack!")
             time.sleep(1)
             return adjusted_enemy_damage, True  
     
@@ -131,15 +131,15 @@ def create_character():
     clear()
     name = input("\nEnter your character's name: ").strip()
     clear()
-    print("\nChoose your class:\n1. Brutality (Health: 85, Attack: 30)\n2. Tactical (Health: 100, Attack: 25)\n3. Survival (Health: 115, Attack: 20)")
+    print("\nChoose your class:\n1. Brutality (Health: 85, Attack: 40)\n2. Tactical (Health: 100, Attack: 35)\n3. Survival (Health: 115, Attack: 30)")
     class_choice = input_with_prompt("Enter your choice (1/2/3): ", ['1', '2', '3'])
     
     if class_choice == '1':
-        return Character(name, "Brutality", 85, 30)
+        return Character(name, "Brutality", 85, 45)
     elif class_choice == '2':
-        return Character(name, "Tactical", 100, 25)
+        return Character(name, "Tactical", 100, 35)
     elif class_choice == '3':
-        return Character(name, "Survival", 115, 20)
+        return Character(name, "Survival", 115, 30)
 
 def equip_weapon(character, weapons):
    
@@ -228,7 +228,8 @@ def combat(character, enemy):
                 continue  
 
         elif action == 'H':
-            character.heal(20)  
+            adjusted_enemy_damage, _ = apply_special_abilities(character, enemy)  # Ignore freeze_triggered
+            character.heal(25)  
 
         elif action == 'R':
             clear()
@@ -242,7 +243,7 @@ def combat(character, enemy):
 
         if character.health <= 0:
             print("\nYou have been defeated!")
-            character.inventory = ["Sword"]  
+            character.inventory = ["Sword"]   
             time.sleep(2)
             return 'defeated'
         if enemy.health <= 0:
