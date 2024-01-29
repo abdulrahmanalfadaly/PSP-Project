@@ -32,9 +32,13 @@
         "special_ability": null
     },
     {
-        "name": "Shieldbreaker",
-        "attack_modifier": 0,
-        "health_modifier": 10
+        "name": "Frost Bite Dagger",
+        "attack_modifier": 5,
+        "health_modifier": 0,
+        "special_ability": {
+            "name": "Freeze the enemy",
+            "chance": 15
+        }
     },
     {
         "name": "Thunder Axe",
